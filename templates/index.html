@@ -4,14 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <script src="static/js/socket.io.min.js"></script>
-    <script src="static/js/index.js"></script>
+
+    <script src="static/js/index/templates.js"></script>
+
+    <script src="static/js/index/globalFunctions.js"></script>
+    <script src="static/js/index/globalVariables.js"></script>
+
+    <script type="module" src="static/js/index/yearController.js"></script>
+    <script type="module" src="static/js/index/paintController.js"></script>
+    <script type="module" src="static/js/index/keyBordController.js"></script>
+
+
+    <script type="module" src="static/js/index/main.js"></script>
 
     <link rel="stylesheet" href="static/css/index.css">
 
-    <title>???</title>
+    <title>PC V2 - Index</title>
 </head>
 <body>
 
+    <div class="main">
+        <div class="up">
+            <h1 id="mainYear">2023</h1>
+        </div>
+        <div class="mid" id="monthsBox">
+
+        </div>
+        <div class="down">
+            <div class="up">
+                <p id="mainSum">???</p>
+            </div>
+            <div class="down">
+                <div class="left" id="mainLeft">[</div>
+                <div class="righ" id="mainRight">]</div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
