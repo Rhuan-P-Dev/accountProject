@@ -1,0 +1,218 @@
+/*
+
+
+
+
+*/
+
+:root{
+ --defaultPadding: calc(1% + 3px);
+}
+
+/* CUSTOM CLASS */
+
+.clickable{
+    cursor: pointer;
+    user-select: none;
+}
+
+.freeze *, .freeze{
+    opacity: 70%;
+    user-select: none;
+    cursor: not-allowed;
+}
+
+.delete{
+    border: 3px solid orange !important;
+}
+
+
+
+
+/* */
+
+.account{
+    display: grid;
+    grid: auto / auto auto auto auto auto !important;
+    margin: 4px 0px;
+    padding: 5px;
+    border: 3px solid red;
+}
+
+.account > *{
+    padding: 4px;
+}
+
+.account > .required{
+    border-bottom: 3px solid red;
+}
+
+/* GLOBAL CHANGE */
+
+textarea,input{
+    box-shadow: 0 0 0 0;
+    outline: 0;
+}
+
+img{
+    width: 100%;
+    height: 100%;
+}
+
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+html,body{
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+}
+
+/* CSS */
+
+.main{
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.main > .up{
+    text-align: center;
+    font-size: 1.4vw;
+    padding: var(--defaultPadding);
+    border-bottom: 2px solid white;
+}
+
+.main > .mid{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.main > .mid > .up{
+    display: flex;
+    padding: 10px 0px;
+    border-bottom: 2px solid white;
+}
+
+.main > .mid > .up > *{
+    width: 100%;
+    margin: auto;
+    text-transform: uppercase;
+    border-bottom: 6px solid gray;
+    border-left: 6px solid black;
+    border-right: 6px solid black;
+}
+
+.main > .mid > .down{
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.main > .down{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: 2.5vw;
+}
+
+.main > .down > *{
+    border-top: 2px solid white;
+    padding: calc(var(--defaultPadding) / 1.5);
+}
+
+.main > .down > .up{
+    padding: calc(var(--defaultPadding) / 3.5);
+    font-size: 1.3vw;
+}
+
+.main > .down > .mid{
+    display: flex;
+}
+
+.main > .down > .mid > *{
+    width: 100%;
+}
+
+.accountsAdd,.accountsSave,.accountsDelete{
+    display: inline;
+    padding: 2px 4px;
+}
+
+.accountsAdd{
+    border: 2px solid green;
+}
+
+.accountsSave{
+    border: 2px solid yellow;
+}
+
+.accountsDelete{
+    border: 2px solid red;
+}
+
+.main > .down > .down{
+    display: flex;
+}
+
+.main > .down > .down > *{
+    display: inline;
+    margin: auto;
+    padding: 2px 8px;
+}
+
+
+/* INTERACTIVE */
+
+.accountsAdd:hover{
+    background-color: rgba(0, 128, 0, 0.5);
+}
+.accountsSave:hover{
+    background-color: rgba(255, 255, 0, 0.5);
+}
+
+.accountsDelete:hover{
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+
+/* MEDIA */
+
+
+@media screen and (max-width: 1400px){
+
+    .account{
+        grid: auto / auto auto auto auto !important;
+    }
+
+}
+
+@media screen and (max-width: 1200px){
+
+    .account{
+        grid: auto / auto auto auto !important;
+    }
+    
+}
+
+@media screen and (max-width: 1000px){
+
+    .account{
+        grid: auto / auto auto !important;
+    }
+    
+}
+
+@media screen and (max-width: 600px){
+
+    .account{
+        grid: auto / auto !important;
+    }
+    
+}

@@ -33,10 +33,12 @@ docReady(function(){
         if(msg.cmd == "allYearData"){
             buildCalendar(msg.data)
 
-            document.getElementById("mainSum").innerHTML = moneyStandard+sumArray(msg.data)
+            document.getElementById("mainSum").innerHTML = moneyStandard+resumeMoney(sumArray(msg.data))
 
             Paint.paintCalendar(msg.data)
             Paint.paintYear(msg.data)
+
+            buildMonthsTriggers()
 
         }
     })
@@ -60,7 +62,7 @@ function buildCalendar(data){
         tempTemplate = tempTemplate.replace("{month}",numberCalendar+" - "+nameCalendar)
         tempTemplate = tempTemplate.replace("{value}", data[index])
 
-        tempTemplate = tempTemplate.replace("{value}", moneyStandard+data[index])
+        tempTemplate = tempTemplate.replace("{value}", moneyStandard+resumeMoney(data[index]))
 
         monthsBox.insertAdjacentHTML("beforeend",tempTemplate)
 
@@ -76,9 +78,24 @@ function resetSite(){
     document.getElementById("monthsBox").innerHTML = ""
 }
 
+function buildMonthsTriggers(){
+
+    let months = document.querySelectorAll(".month")
+
+    for (let index = 0; index < months.length; index++) {
+
+        months[index].addEventListener("click",function(){
+
+            socket.send({'cmd': 'setAccountsData', 'year':Year.getYear(), 'month':parseInt(this.getAttribute("id"))})
+
+            location.href = "accounts"
+        })
+        
+    }
+        
+}
 
 
-// all functions that will be performed once
 function browseInit(){
 
     initSite()

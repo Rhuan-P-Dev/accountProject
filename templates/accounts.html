@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <script src="static/js/socket.io.min.js"></script>
+    <script src="static/js/extraGlobalFunctions.js"></script>
+    <script src="static/js/extraGlobalVariables.js"></script>
+
+    <script src="static/js/accounts/templates.js"></script>
+
+    <script src="static/js/accounts/globalFunctions.js"></script>
+    <script src="static/js/accounts/globalVariables.js"></script>
+
+    <script type="module" src="static/js/accounts/sumBarController.js"></script>
+    <script type="module" src="static/js/accounts/accountsController.js"></script>
+    <script type="module" src="static/js/accounts/keyBordController.js"></script>
+    <script type="module" src="static/js/accounts/UIController.js"></script>
+    <script type="module" src="static/js/accounts/dataController.js"></script>
+    <script type="module" src="static/js/accounts/serverRequestController.js"></script>
+    <script type="module" src="static/js/accounts/siteController.js"></script>
+    <script type="module" src="static/js/accounts/sortBoxController.js"></script>
+
+
+    <script type="module" src="static/js/accounts/main.js"></script>
+
+    <link rel="stylesheet" href="static/css/accounts.css">
+
+    <title>PC V2 - Contas</title>
+</head>
+<body>
+
+    <div class="main">
+        <div class="up" id="mainUp">
+            <h1 class="data" id="mainData" year="0000" month="1">01/0000 - Janeiro</h1>
+        </div>
+        <div class="mid" id="mainMid">
+            <div class="up" id="sortBox">
+                <div class="clickable sort" title="Nome" sortEffect="upDown" sortType="sortName" type="str" id="sortName">Nome</div>
+                <div class="clickable sort" title="Valor" sortEffect="upDown" sortType="sortValue" type="float" id="sortValue">Valor</div>
+                <div class="clickable sort" title="Produto" sortEffect="upDown" sortType="sortProduct" type="str" id="sortProduct">Produto</div>
+                <div class="clickable sort" title="Método" sortEffect="upDown" sortType="sortMethod" type="str" id="sortMethod">Método</div>
+                <div class="clickable sort" title="Parcela Atual (Numérico ou INF)" sortEffect="upDown" sortType="sortStart" type="int" id="sortStart">P. Atual</div>
+                <div class="clickable sort" title="Parcela Final (Numérico ou INF)" sortEffect="upDown" sortType="sortEnd" type="int" id="sortEnd">P. Final</div>
+                <div class="clickable sort" title="Dia" sortEffect="upDown" sortType="sortDate" type="int" id="sortDate">Dia</div>
+            </div>
+            <div class="down" id="accountsBox"></div>
+        </div>
+        <div class="down" id="mainDown">
+            <div class="up">
+                <p id="sumBar">???</p>
+            </div>
+            <div class="mid">
+                <div class="left">
+                    <div class="accountsAdd clickable" id="accountsAdd">ADD</div>
+                </div>
+                <div class="mid">
+                    <div class="accountsSave clickable" id="accountsSave">SAVE</div>
+                </div>
+                <div class="right">
+                    <div class="accountsDelete clickable" id="accountsDelete">DELETE</div>
+                </div>
+            </div>
+            <div class="down">
+                <div class="left clickable" id="leftButton">[</div>
+                <div class="mid clickable" id="midButton">[]</div>
+                <div class="righ clickable" id="rightButton">]</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

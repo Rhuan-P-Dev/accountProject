@@ -14,6 +14,10 @@ pathToMonthsObjects = "monthsObjects/"
 pathToInfObjects = "infObjects/"
 
 
+accountsYear = 0
+accountsMonth = 0
+
+
 # Terminal tags for colored text
 class colors:
     PURPLE    = '\033[95m'
@@ -40,6 +44,9 @@ print("{0}OK!{1}".format(colors.GREEN, colors.END))
 def index():
     return render_template('index.html')
 
+@app.route('/accounts')
+def accounts():
+    return render_template('accounts.html')
 
 # Class
 
@@ -153,6 +160,24 @@ class CustomLinkedList:
             else:
                 n = n["next"]
 
+    def ObjectInf(self, year, month, object, type):
+
+        n = self.list["head"]
+        OB = ObjectControler()
+
+        typesOfObject = {"remove":OB.objectRemove,"add":OB.objectAdd,"update":OB.objectUpdate}
+
+        while True:
+            if(n["value"]["year"] == year):
+                for x in n["value"]["months"]:
+                    if(x["month"] == month):
+                        return typesOfObject[type](x["objects"], object)
+
+            if(n["next"] == "null"):
+                return False
+            else:
+                n = n["next"]
+
     def thisYearExist(self, year):
         n = self.list["head"]
         while True:
@@ -233,6 +258,40 @@ class CustomLinkedList:
                 return result / 100
             n = n["next"]
 
+    def toMonthsArray(self, year, month):
+        n = self.list["head"]
+        array = []
+        while True:
+            for months in n["value"]["months"]:
+                for SE in months["SE"]:
+                    for objects in SE["objects"]:
+                        tempObj = calcTheEvolution(year, month, n["value"]["year"], months["month"], SE["start"], SE["end"])
+                        objects["start"] = tempObj["start"]
+                        objects["end"] = tempObj["end"]
+                        objects["month"] = tempObj["month"]
+                        objects["year"] = n["value"]["year"]
+                        objects["type"] = "months"
+                        array.append(objects)
+            if(n["next"] == "null"):
+                return array
+            n = n["next"]
+
+    def toInfArray(self, year, month):
+        n = self.list["head"]
+        array = []
+        while True:
+            for months in n["value"]["months"]:
+                for objects in months["objects"]:
+                    objects["month"] = months["month"]
+                    objects["year"] = n["value"]["year"]
+                    objects["type"] = "inf"
+                    array.append(objects)
+            if(n["next"] == "null"):
+                return array
+            n = n["next"]
+
+
+
 
 class ObjectControler:
 
@@ -306,21 +365,6 @@ def get_message(msg):
     elif(msg['cmd'] == 'saveMonthsObjects'):
         # Create/update a 'Months' CustomLinkedList data base with all objects
 
-        if(not checkFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")):
-            createFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")
-            temp = CustomLinkedList({"head": {}})
-
-            emptyObject = {}
-            emptyObject['year'] = msg['data']['year']
-            emptyObject['months'] = []
-            emptyObject['months'].append(createMonthObject(msg['data']['month'],msg['data']['start'],msg['data']['end'],msg['data']['objects']))
-            
-            temp.add(emptyObject)
-
-            writeFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
-
-            return
-
         monthsObjects = CustomLinkedList(json.loads(extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
 
         # check if the element exists if there is no creating the element, if everything is ok just modify the objects
@@ -351,29 +395,15 @@ def get_message(msg):
     elif(msg['cmd'] == 'saveInfObjects'):
         # Create/update a 'inf' CustomLinkedList data base and with all objects
 
-        if(not checkFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")):
-            createFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")
-            temp = CustomLinkedList({"head": {}})
-
-            emptyObject = {}
-            emptyObject['year'] = msg['data']['year']
-            emptyObject['months'] = []
-            emptyObject['months'].append(createInfObject(msg['data']['month'],msg['data']['objects']))
-            
-            temp.add(emptyObject)
-
-            writeFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
-            return
-
         infObjects = CustomLinkedList(json.loads(extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
-        
+
         # check if the element exists if there is no creating the element, if everything is ok just modify the objects
         if(infObjects.thisYearExist(msg['data']['year'])):
 
             if(infObjects.thisMonthExist(msg['data']['year'],msg['data']['month'])):
 
                 for x in msg['data']['objects']:
-                    infObjects.Object(msg['data']['year'],msg['data']['month'],x,x['flag'])
+                    infObjects.ObjectInf(msg['data']['year'],msg['data']['month'],x,x['flag'])
 
             else:
                 infObjects.addMonth(msg['data']['year'],createInfObject(msg['data']['month'],msg['data']['objects']))
@@ -389,6 +419,33 @@ def get_message(msg):
         writeFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt", json.dumps(infObjects.returnLinkedList()))
 
     elif(msg['cmd'] == 'getAllYearData'):
+
+        if(not checkFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")):
+            createFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")
+            temp = CustomLinkedList({"head": {}})
+
+            emptyObject = {}
+            emptyObject['year'] = msg['data']
+            emptyObject['months'] = []
+            
+            temp.add(emptyObject)
+
+            writeFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
+            return
+
+        if(not checkFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")):
+            createFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")
+            temp = CustomLinkedList({"head": {}})
+
+            emptyObject = {}
+            emptyObject['year'] = msg['data']
+            emptyObject['months'] = []
+            
+            temp.add(emptyObject)
+
+            writeFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
+            return
+
         monthArray = getAllMonthData(msg['data'])
         monthsArray = getAllMonthsData(msg['data'])
         infArray = getAllInfData(msg['data'])
@@ -402,6 +459,28 @@ def get_message(msg):
 
         emit('from_server', {'cmd': 'allYearData', 'data': finalArray})
         
+    elif(msg['cmd'] == 'setAccountsData'):
+        global accountsYear
+        global accountsMonth
+
+        accountsYear = msg['year']
+        accountsMonth = msg['month']
+
+    elif(msg['cmd'] == 'getAccountsData'):
+        emit('from_server', {'cmd': 'initSite', 'year':accountsYear, 'month':accountsMonth})
+
+    elif(msg['cmd'] == 'getAccounts'):
+        finalArray = []
+
+        finalArray.append(getMonthAccounts(msg['year'],msg['month']))
+
+        finalArray.append(getMonthsAccounts(msg['year'], msg['month']))
+
+        finalArray.append(getInfAccounts(msg['year'], msg['month']))
+
+        emit('from_server', {'cmd': 'loadAccounts', 'accounts': finalArray})
+        
+
 def checkFile(pathToFile):
     try:
         with open(pathToFile, 'r') as f:
@@ -446,7 +525,7 @@ def getAllMonthData(year):
     index = 0
     monthsArray = []
     while index < 12:
-        allMonthData = getMonthData(year,(index+1))
+        allMonthData = getMonthAccounts(year,(index+1))
         if(allMonthData):
             monthDataSum = sumAllMonthData(allMonthData)
         else:
@@ -455,7 +534,7 @@ def getAllMonthData(year):
         index+=1
     return monthsArray
 
-def getMonthData(year, month):
+def getMonthAccounts(year, month):
     pathToFile = pathToAllObjects+pathToMonthObjects+(f"{year}-{month}.txt")
     if(checkFile(pathToFile)):
         return json.loads(open(pathToFile, 'r+').readlines()[0])
@@ -502,7 +581,37 @@ def getAllInfData(year):
 
     return infArray
 
-    
+def getMonthsAccounts(year, month):
+    dataBaseResult = CustomLinkedList(CustomLinkedList(json.loads(extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt"))).Search(year,month,"month"))
+
+    if(not dataBaseResult.returnLinkedList() == {'head': {}}):
+        arrayResult = dataBaseResult.toMonthsArray(year, month)
+        if(arrayResult == []):
+            arrayResult = False
+    else:
+        arrayResult = False
+
+    return arrayResult
+
+
+def calcTheEvolution(searchYear, searchMonth, year, month, start, end):
+        path = (end - start) + month
+        cut = ( (searchYear - year) * 12 ) + searchMonth
+        diff = path - cut
+        evolution = ( (path - month) - diff ) + start
+
+        return {"start":evolution, "end":end, "month":month}
+
+def getInfAccounts(year, month):
+    dataBaseResult = CustomLinkedList(CustomLinkedList(json.loads(extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt"))).Search(year,month,"inf"))
+
+    if(not dataBaseResult.returnLinkedList() == {'head': {}}):
+        arrayResult = dataBaseResult.toInfArray(year, month)
+    else:
+        arrayResult = False
+
+    return arrayResult
+
 #==================================================================#
 #  Final startup commands to launch Flask app
 #==================================================================#
