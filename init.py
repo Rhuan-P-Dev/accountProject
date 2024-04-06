@@ -3,10 +3,12 @@ from fileSystemController import FileSystemController
 from customLinkedListController import CustomLinkedListController
 from objectController import ObjectController
 from pathController import PathController
+from accountsInfoController import AccountsInfoController
 
 FileSystem = FileSystemController()
 Object = ObjectController()
 Path = PathController()
+AccountsInfo = AccountsInfoController()
 
 import json
 
@@ -82,13 +84,13 @@ def get_message(msg):
                     monthsObjects.addSE(msg['data']['year'],msg['data']['month'],{"start":msg['data']['start'],"end":msg['data']['end'],"objects":msg['data']['objects']})
 
             else:
-                monthsObjects.addMonth(msg['data']['year'],createMonthObject(msg['data']['month'],msg['data']['start'],msg['data']['end'],msg['data']['objects']))
+                monthsObjects.addMonth(msg['data']['year'],AccountsInfo.createMonthObject(msg['data']['month'],msg['data']['start'],msg['data']['end'],msg['data']['objects']))
         else:
 
             emptyObject = {}
             emptyObject['year'] = msg['data']['year']
             emptyObject['months'] = []
-            emptyObject['months'].append(createMonthObject(msg['data']['month'],msg['data']['start'],msg['data']['end'],msg['data']['objects']))
+            emptyObject['months'].append(AccountsInfo.createMonthObject(msg['data']['month'],msg['data']['start'],msg['data']['end'],msg['data']['objects']))
 
             monthsObjects.add(emptyObject)
 
@@ -108,13 +110,13 @@ def get_message(msg):
                     infObjects.ObjectInf(msg['data']['year'],msg['data']['month'],x,x['flag'])
 
             else:
-                infObjects.addMonth(msg['data']['year'],createInfObject(msg['data']['month'],msg['data']['objects']))
+                infObjects.addMonth(msg['data']['year'],AccountsInfo.createInfObject(msg['data']['month'],msg['data']['objects']))
         else:
 
             emptyObject = {}
             emptyObject['year'] = msg['data']['year']
             emptyObject['months'] = []
-            emptyObject['months'].append(createInfObject(msg['data']['month'],msg['data']['objects']))
+            emptyObject['months'].append(AccountsInfo.createInfObject(msg['data']['month'],msg['data']['objects']))
 
             infObjects.add(emptyObject)
         
@@ -148,9 +150,9 @@ def get_message(msg):
             FileSystem.writeFileTxt(Path.pathToInfObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
             return
 
-        monthArray = getAllMonthData(msg['data'])
-        monthsArray = getAllMonthsData(msg['data'])
-        infArray = getAllInfData(msg['data'])
+        monthArray = AccountsInfo.getAllMonthData(msg['data'])
+        monthsArray = AccountsInfo.getAllMonthsData(msg['data'])
+        infArray = AccountsInfo.getAllInfData(msg['data'])
 
         index = 0
         finalArray = []
@@ -169,117 +171,18 @@ def get_message(msg):
         accountsMonth = msg['month']
 
     elif(msg['cmd'] == 'getAccountsData'):
-        emit('from_server', {'cmd': 'initSite', 'year':accountsYear, 'month':accountsMonth})
+        emit('from_server', {'cmd': 'initSite', 'year': accountsYear, 'month': accountsMonth})
 
     elif(msg['cmd'] == 'getAccounts'):
         finalArray = []
 
-        finalArray.append(getMonthAccounts(msg['year'],msg['month']))
+        finalArray.append(AccountsInfo.getMonthAccounts(msg['year'],msg['month']))
 
-        finalArray.append(getMonthsAccounts(msg['year'], msg['month']))
+        finalArray.append(AccountsInfo.getMonthsAccounsts(msg['year'], msg['month']))
 
-        finalArray.append(getInfAccounts(msg['year'], msg['month']))
+        finalArray.append(AccountsInfo.getInfAccounts(msg['year'], msg['month']))
 
         emit('from_server', {'cmd': 'loadAccounts', 'accounts': finalArray})
-        
-
-def createMonthObject(month, start, end, objects):
-    monthObject = {}
-    monthObject['month'] = month
-    monthObject['SE'] = []
-    monthObject['SE'].append({
-        'start':start,
-        'end':end,
-        'objects':objects,
-    })
-    return monthObject
-
-def createInfObject(month, objects, infObject = {}):
-    infObject['month'] = month
-    infObject['objects'] = objects
-    return infObject
-    
-def getAllMonthData(year):
-    index = 0
-    monthsArray = []
-    while index < 12:
-        allMonthData = getMonthAccounts(year,(index+1))
-        if(allMonthData):
-            monthDataSum = sumAllMonthData(allMonthData)
-        else:
-            monthDataSum = 0
-        monthsArray.append(monthDataSum)
-        index+=1
-    return monthsArray
-
-def getMonthAccounts(year, month):
-    pathToFile = Path.pathToMonthObjects+(f"{year}-{month}.txt")
-    if(FileSystem.checkFile(pathToFile)):
-        return json.loads(open(pathToFile, 'r+').readlines()[0])
-    else:
-        return False
-
-def sumAllMonthData(data):
-    result = 0
-    for x in data:
-        result+= int((x['value'] * 100))
-    return result / 100
-
-def getAllMonthsData(year):
-    dataBase = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToMonthsObjects+"dataBase.txt")))
-
-    month = 1
-    monthsArray = []
-
-    while month < 13:
-        dataBaseResult = dataBase.Search(year,month,"month")
-        if(not dataBaseResult == {'head': {}}):
-            sumResult = CustomLinkedListController(dataBaseResult).sumAllYearsMonths()
-        else:
-            sumResult = 0
-        monthsArray.append(sumResult)
-        month += 1
-
-    return monthsArray
-
-def getAllInfData(year):
-    dataBase = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToInfObjects+"dataBase.txt")))
-
-    month = 1
-    infArray = []
-
-    while month < 13:
-        dataBaseResult = dataBase.Search(year,month,"inf")
-        if(not dataBaseResult == {'head': {}}):
-            sumResult = CustomLinkedListController(dataBaseResult).sumAllYearsInf()
-        else:
-            sumResult = 0
-        infArray.append(sumResult)
-        month += 1
-
-    return infArray
-
-def getMonthsAccounts(year, month):
-    dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToMonthsObjects+"dataBase.txt"))).Search(year,month,"month"))
-
-    if(not dataBaseResult.returnLinkedList() == {'head': {}}):
-        arrayResult = dataBaseResult.toMonthsArray(year, month)
-        if(arrayResult == []):
-            arrayResult = False
-    else:
-        arrayResult = False
-
-    return arrayResult
-
-def getInfAccounts(year, month):
-    dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToInfObjects+"dataBase.txt"))).Search(year,month,"inf"))
-
-    if(not dataBaseResult.returnLinkedList() == {'head': {}}):
-        arrayResult = dataBaseResult.toInfArray(year, month)
-    else:
-        arrayResult = False
-
-    return arrayResult
 
 if __name__ == "__main__":
     print("Server started!")
