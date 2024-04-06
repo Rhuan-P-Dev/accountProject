@@ -1,3 +1,8 @@
+
+from fileSystemController import FileSystemController
+
+FileSystem = FileSystemController()
+
 import copy
 import json 
 import random
@@ -297,13 +302,13 @@ class ObjectControler:
 
 @socketio.on('connect')
 def do_connect():
-    print("{0}Client connected!{1}".format(colors.GREEN, colors.END))
+    print("Client connected!")
     emit('from_server', {'cmd': 'connected'})
 
 @socketio.on('message')
 def get_message(msg):
 
-    print("{0}Data recieved:{1}{2}".format(colors.GREEN, msg, colors.END))
+    print("Data recieved:{0}".format(msg))
     # Submit action
 
     if(msg['cmd'] == 'saveMonthObjects'):
@@ -316,13 +321,13 @@ def get_message(msg):
 
         file = str(msg['data']['year'])+"-"+str(msg['data']['month'])+".txt"
 
-        if(not checkFile(pathToAllObjects+pathToMonthObjects+file)):
-            createFile(pathToAllObjects+pathToMonthObjects+file)
-            writeFileTxt(pathToAllObjects+pathToMonthObjects+file, json.dumps(msg['data']['objects']))
+        if(not FileSystem.checkFile(pathToAllObjects+pathToMonthObjects+file)):
+            FileSystem.createFile(pathToAllObjects+pathToMonthObjects+file)
+            FileSystem.writeFileTxt(pathToAllObjects+pathToMonthObjects+file, json.dumps(msg['data']['objects']))
             return
                 
         
-        monthObjects = json.loads(extractFileTxt(pathToAllObjects+pathToMonthObjects+file))
+        monthObjects = json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthObjects+file))
 
         OB = ObjectControler()
         typesOfObject = {"remove":OB.objectRemove,"add":OB.objectAdd,"update":OB.objectUpdate}
@@ -331,12 +336,12 @@ def get_message(msg):
             typesOfObject[x['flag']](monthObjects, x)
 
 
-        writeFileTxt(pathToAllObjects+pathToMonthObjects+file, json.dumps(monthObjects))
+        FileSystem.writeFileTxt(pathToAllObjects+pathToMonthObjects+file, json.dumps(monthObjects))
         
     elif(msg['cmd'] == 'saveMonthsObjects'):
         # Create/update a 'Months' CustomLinkedList data base with all objects
 
-        monthsObjects = CustomLinkedList(json.loads(extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
+        monthsObjects = CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
 
         # check if the element exists if there is no creating the element, if everything is ok just modify the objects
         if(monthsObjects.thisYearExist(msg['data']['year'])):
@@ -361,12 +366,12 @@ def get_message(msg):
 
             monthsObjects.add(emptyObject)
 
-        writeFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt", json.dumps(monthsObjects.returnLinkedList()))
+        FileSystem.writeFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt", json.dumps(monthsObjects.returnLinkedList()))
 
     elif(msg['cmd'] == 'saveInfObjects'):
         # Create/update a 'inf' CustomLinkedList data base and with all objects
 
-        infObjects = CustomLinkedList(json.loads(extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
+        infObjects = CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
 
         # check if the element exists if there is no creating the element, if everything is ok just modify the objects
         if(infObjects.thisYearExist(msg['data']['year'])):
@@ -387,12 +392,12 @@ def get_message(msg):
 
             infObjects.add(emptyObject)
         
-        writeFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt", json.dumps(infObjects.returnLinkedList()))
+        FileSystem.writeFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt", json.dumps(infObjects.returnLinkedList()))
 
     elif(msg['cmd'] == 'getAllYearData'):
 
-        if(not checkFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")):
-            createFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")
+        if(not FileSystem.checkFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")):
+            FileSystem.createFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")
             temp = CustomLinkedList({"head": {}})
 
             emptyObject = {}
@@ -401,11 +406,11 @@ def get_message(msg):
             
             temp.add(emptyObject)
 
-            writeFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
+            FileSystem.writeFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
             return
 
-        if(not checkFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")):
-            createFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")
+        if(not FileSystem.checkFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")):
+            FileSystem.createFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")
             temp = CustomLinkedList({"head": {}})
 
             emptyObject = {}
@@ -414,7 +419,7 @@ def get_message(msg):
             
             temp.add(emptyObject)
 
-            writeFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
+            FileSystem.writeFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
             return
 
         monthArray = getAllMonthData(msg['data'])
@@ -452,30 +457,6 @@ def get_message(msg):
         emit('from_server', {'cmd': 'loadAccounts', 'accounts': finalArray})
         
 
-def checkFile(pathToFile):
-    try:
-        with open(pathToFile, 'r') as f:
-            return True
-    except IOError:
-        return False
-
-
-def createFile(pathToFile):
-    arquivo = open(pathToFile, 'w+')
-    arquivo.close()
-
-def extractFileTxt(pathToFile):
-    fileTxt = open(pathToFile, 'r+')
-    txt = fileTxt.readlines()[0]
-    fileTxt.close()
-    return txt
-
-def writeFileTxt(pathToFile, txt):
-    fileTxt = open(pathToFile, 'w+')
-    fileTxt.writelines(txt)
-    fileTxt.close()
-    return True
-
 def createMonthObject(month, start, end, objects):
     monthObject = {}
     monthObject['month'] = month
@@ -507,7 +488,7 @@ def getAllMonthData(year):
 
 def getMonthAccounts(year, month):
     pathToFile = pathToAllObjects+pathToMonthObjects+(f"{year}-{month}.txt")
-    if(checkFile(pathToFile)):
+    if(FileSystem.checkFile(pathToFile)):
         return json.loads(open(pathToFile, 'r+').readlines()[0])
     else:
         return False
@@ -519,7 +500,7 @@ def sumAllMonthData(data):
     return result / 100
 
 def getAllMonthsData(year):
-    dataBase = CustomLinkedList(json.loads(extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
+    dataBase = CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
 
     month = 1
     monthsArray = []
@@ -536,7 +517,7 @@ def getAllMonthsData(year):
     return monthsArray
 
 def getAllInfData(year):
-    dataBase = CustomLinkedList(json.loads(extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
+    dataBase = CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
 
     month = 1
     infArray = []
@@ -553,7 +534,7 @@ def getAllInfData(year):
     return infArray
 
 def getMonthsAccounts(year, month):
-    dataBaseResult = CustomLinkedList(CustomLinkedList(json.loads(extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt"))).Search(year,month,"month"))
+    dataBaseResult = CustomLinkedList(CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt"))).Search(year,month,"month"))
 
     if(not dataBaseResult.returnLinkedList() == {'head': {}}):
         arrayResult = dataBaseResult.toMonthsArray(year, month)
@@ -574,7 +555,7 @@ def calcTheEvolution(searchYear, searchMonth, year, month, start, end):
         return {"start":evolution, "end":end, "month":month}
 
 def getInfAccounts(year, month):
-    dataBaseResult = CustomLinkedList(CustomLinkedList(json.loads(extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt"))).Search(year,month,"inf"))
+    dataBaseResult = CustomLinkedList(CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt"))).Search(year,month,"inf"))
 
     if(not dataBaseResult.returnLinkedList() == {'head': {}}):
         arrayResult = dataBaseResult.toInfArray(year, month)
