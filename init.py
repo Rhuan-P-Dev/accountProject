@@ -1,11 +1,12 @@
 
 from fileSystemController import FileSystemController
+from customLinkedListController import CustomLinkedListController
+from objectController import ObjectController
 
 FileSystem = FileSystemController()
+Object = ObjectController()
 
-import copy
-import json 
-import random
+import json
 
 pathToAllObjects = "./static/allObjects/"
 
@@ -33,272 +34,6 @@ def index():
 @app.route('/accounts')
 def accounts():
     return render_template('accounts.html')
-
-# Class
-
-class CustomLinkedList:
-
-    def __init__(self, list = {"head": {}}):
-        self.list = list
-
-    def returnLinkedList(self):
-        return self.list
-    
-    # this list is self-adjusted to keep in a growing order
-    def add(self, value):
-        if(self.list["head"] == {}):
-            self.list["head"]["value"] = value
-            self.list["head"]["next"] = "null"
-        else:
-            n = self.list["head"]
-            while True:
-                if(n["value"]["year"] > value["year"]):
-                    oldValue = n["value"]
-                    oldNext = n["next"]
-                    n["value"] = value
-                    n["next"] = {"value":oldValue,"next":oldNext}
-                    return
-                else:
-                    while True:
-                        if(n["next"] == "null"):
-                            n["next"] = {}
-                            n["next"]["value"] = value
-                            n["next"]["next"] = "null"
-                            return
-                        else:
-                            n = n["next"]
-                            break
-    
-    # search on the self.list and create a list from the results
-    def Search(self, year, month, type):
-        typesOfSearch = {"month":self.searchMonths,"inf":self.searchInf}
-
-        tempCustomLinkedList = CustomLinkedList({"head": {}})
-        temp = ""
-
-        n = self.list["head"]
-
-        while True:
-
-            temp = typesOfSearch[type](n["value"], year, month)
-
-            if(not temp == "null"):
-                tempCustomLinkedList.add(temp)
-
-            if(n["next"] == "null"):
-                return tempCustomLinkedList.returnLinkedList()
-            else:
-                n = n["next"]
-
-    # adds nodes that the range 'start' and 'end', are high or equal from the search range
-    def searchMonths(self, n, year, month):
-        n2 = copy.deepcopy(n)
-        if(n["year"] <= year):
-            indexMonth = 0
-            for x in n["months"]:
-                indexSE = 0
-                for y in x["SE"]:
-                    path = ( y["end"] - y["start"] ) + x["month"]
-                    cut = ( ( year - n["year"] ) * 12 ) + month
-                    if( path < cut or n["year"] == year and x["month"] > month):
-                        del n2["months"][indexMonth]["SE"][indexSE]
-                        indexSE-=1
-                    indexSE+=1
-                indexMonth+=1
-            return n2
-        return "null"
-
-    # adds nodes that are smaller than the search value
-    def searchInf(self, n, year, month):
-        n = copy.deepcopy(n)
-        if(n["year"] < year):
-            return n
-        if(n["year"] == year):
-            index = 0
-            for x in n["months"]:
-                if(x["month"] > month):
-                    del n["months"][index]
-                index+=1
-            if(len(n["months"]) == 0):
-                return "null"
-            return n
-
-        return "null"
-
-    # add, remove, update a Object
-    def Object(self, year, month, start, end, object, type):
-
-        n = self.list["head"]
-        OB = ObjectControler()
-
-        typesOfObject = {"remove":OB.objectRemove,"add":OB.objectAdd,"update":OB.objectUpdate}
-
-        while True:
-            if(n["value"]["year"] == year):
-                for x in n["value"]["months"]:
-                    if(x["month"] == month):
-                        for y in x["SE"]:
-                            if(y["start"] == start and y["end"] == end):
-                                return typesOfObject[type](y["objects"], object)
-
-            if(n["next"] == "null"):
-                return False
-            else:
-                n = n["next"]
-
-    def ObjectInf(self, year, month, object, type):
-
-        n = self.list["head"]
-        OB = ObjectControler()
-
-        typesOfObject = {"remove":OB.objectRemove,"add":OB.objectAdd,"update":OB.objectUpdate}
-
-        while True:
-            if(n["value"]["year"] == year):
-                for x in n["value"]["months"]:
-                    if(x["month"] == month):
-                        return typesOfObject[type](x["objects"], object)
-
-            if(n["next"] == "null"):
-                return False
-            else:
-                n = n["next"]
-
-    def thisYearExist(self, year):
-        n = self.list["head"]
-        while True:
-            if(n["value"]["year"] == year):
-                return True
-            if(n["next"] == "null"):
-                return False
-            n = n["next"]
-
-    def thisMonthExist(self, year, month):
-        n = self.list["head"]
-        while True:
-            if(n["value"]["year"] == year):
-                for x in n["value"]["months"]:
-                    if(x["month"] == month):
-                        return True
-                return False
-            if(n["next"] == "null"):
-                return False
-            n = n["next"]
-
-    def addMonth(self, year, month):
-        n = self.list["head"]
-        while True:
-            if(n["value"]["year"] == year):
-                n["value"]["months"].append(month)
-                return True
-            if(n["next"] == "null"):
-                return False
-            n = n["next"]
-
-    def thisSEExist(self, year, month, start, end):
-        n = self.list["head"]
-        while True:
-            if(n["value"]["year"] == year):
-                for x in n["value"]["months"]:
-                    if(x["month"] == month): 
-                        for y in x["SE"]:
-                            if(y["start"] == start and y["end"] == end):
-                                return True
-                    return False
-            if(n["next"] == "null"):
-                return False
-            n = n["next"]
-
-    def addSE(self, year, month, SE):
-        n = self.list["head"]
-        while True:
-            if(n["value"]["year"] == year):
-                for x in n["value"]["months"]:
-                    if(x["month"] == month): 
-                        x["SE"].append(SE)
-                        return True
-            if(n["next"] == "null"):
-                return False
-            n = n["next"]
-
-    def sumAllYearsMonths(self):
-        n = self.list["head"]
-        result = 0
-        while True:
-            for months in n["value"]["months"]:
-                for SE in months["SE"]:
-                    for objects in SE["objects"]:
-                        result+= int((objects["value"] * 100))
-            if(n["next"] == "null"):
-                return result / 100
-            n = n["next"]
-    
-    def sumAllYearsInf(self):
-        n = self.list["head"]
-        result = 0
-        while True:
-            for months in n["value"]["months"]:
-                for objects in months["objects"]:
-                    result+= int((objects["value"] * 100))
-            if(n["next"] == "null"):
-                return result / 100
-            n = n["next"]
-
-    def toMonthsArray(self, year, month):
-        n = self.list["head"]
-        array = []
-        while True:
-            for months in n["value"]["months"]:
-                for SE in months["SE"]:
-                    for objects in SE["objects"]:
-                        tempObj = calcTheEvolution(year, month, n["value"]["year"], months["month"], SE["start"], SE["end"])
-                        objects["start"] = tempObj["start"]
-                        objects["end"] = tempObj["end"]
-                        objects["month"] = tempObj["month"]
-                        objects["year"] = n["value"]["year"]
-                        objects["type"] = "months"
-                        array.append(objects)
-            if(n["next"] == "null"):
-                return array
-            n = n["next"]
-
-    def toInfArray(self, year, month):
-        n = self.list["head"]
-        array = []
-        while True:
-            for months in n["value"]["months"]:
-                for objects in months["objects"]:
-                    objects["month"] = months["month"]
-                    objects["year"] = n["value"]["year"]
-                    objects["type"] = "inf"
-                    array.append(objects)
-            if(n["next"] == "null"):
-                return array
-            n = n["next"]
-
-
-
-
-class ObjectControler:
-
-    def objectRemove(self, array, object):
-        index = 0
-        for x in array:
-            if(x["ID"] == object["ID"]):
-                del array[index]
-                return
-            index+=1
-
-    def objectAdd(self, array, object):
-        array.append(object)
-    
-    def objectUpdate(self, array, object):
-        index = 0
-        for x in array:
-            if(x["ID"] == object["ID"]):
-                array[index] = object
-                return
-            index+=1
 
 @socketio.on('connect')
 def do_connect():
@@ -329,11 +64,8 @@ def get_message(msg):
         
         monthObjects = json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthObjects+file))
 
-        OB = ObjectControler()
-        typesOfObject = {"remove":OB.objectRemove,"add":OB.objectAdd,"update":OB.objectUpdate}
-
         for x in msg['data']['objects']:
-            typesOfObject[x['flag']](monthObjects, x)
+            Object.typesOfObject[x['flag']](monthObjects, x)
 
 
         FileSystem.writeFileTxt(pathToAllObjects+pathToMonthObjects+file, json.dumps(monthObjects))
@@ -341,7 +73,7 @@ def get_message(msg):
     elif(msg['cmd'] == 'saveMonthsObjects'):
         # Create/update a 'Months' CustomLinkedList data base with all objects
 
-        monthsObjects = CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
+        monthsObjects = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
 
         # check if the element exists if there is no creating the element, if everything is ok just modify the objects
         if(monthsObjects.thisYearExist(msg['data']['year'])):
@@ -371,7 +103,7 @@ def get_message(msg):
     elif(msg['cmd'] == 'saveInfObjects'):
         # Create/update a 'inf' CustomLinkedList data base and with all objects
 
-        infObjects = CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
+        infObjects = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
 
         # check if the element exists if there is no creating the element, if everything is ok just modify the objects
         if(infObjects.thisYearExist(msg['data']['year'])):
@@ -398,7 +130,7 @@ def get_message(msg):
 
         if(not FileSystem.checkFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")):
             FileSystem.createFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")
-            temp = CustomLinkedList({"head": {}})
+            temp = CustomLinkedListController({"head": {}})
 
             emptyObject = {}
             emptyObject['year'] = msg['data']
@@ -411,7 +143,7 @@ def get_message(msg):
 
         if(not FileSystem.checkFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")):
             FileSystem.createFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")
-            temp = CustomLinkedList({"head": {}})
+            temp = CustomLinkedListController({"head": {}})
 
             emptyObject = {}
             emptyObject['year'] = msg['data']
@@ -500,7 +232,7 @@ def sumAllMonthData(data):
     return result / 100
 
 def getAllMonthsData(year):
-    dataBase = CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
+    dataBase = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
 
     month = 1
     monthsArray = []
@@ -508,7 +240,7 @@ def getAllMonthsData(year):
     while month < 13:
         dataBaseResult = dataBase.Search(year,month,"month")
         if(not dataBaseResult == {'head': {}}):
-            sumResult = CustomLinkedList(dataBaseResult).sumAllYearsMonths()
+            sumResult = CustomLinkedListController(dataBaseResult).sumAllYearsMonths()
         else:
             sumResult = 0
         monthsArray.append(sumResult)
@@ -517,7 +249,7 @@ def getAllMonthsData(year):
     return monthsArray
 
 def getAllInfData(year):
-    dataBase = CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
+    dataBase = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
 
     month = 1
     infArray = []
@@ -525,7 +257,7 @@ def getAllInfData(year):
     while month < 13:
         dataBaseResult = dataBase.Search(year,month,"inf")
         if(not dataBaseResult == {'head': {}}):
-            sumResult = CustomLinkedList(dataBaseResult).sumAllYearsInf()
+            sumResult = CustomLinkedListController(dataBaseResult).sumAllYearsInf()
         else:
             sumResult = 0
         infArray.append(sumResult)
@@ -534,7 +266,7 @@ def getAllInfData(year):
     return infArray
 
 def getMonthsAccounts(year, month):
-    dataBaseResult = CustomLinkedList(CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt"))).Search(year,month,"month"))
+    dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt"))).Search(year,month,"month"))
 
     if(not dataBaseResult.returnLinkedList() == {'head': {}}):
         arrayResult = dataBaseResult.toMonthsArray(year, month)
@@ -545,17 +277,8 @@ def getMonthsAccounts(year, month):
 
     return arrayResult
 
-
-def calcTheEvolution(searchYear, searchMonth, year, month, start, end):
-        path = (end - start) + month
-        cut = ( (searchYear - year) * 12 ) + searchMonth
-        diff = path - cut
-        evolution = ( (path - month) - diff ) + start
-
-        return {"start":evolution, "end":end, "month":month}
-
 def getInfAccounts(year, month):
-    dataBaseResult = CustomLinkedList(CustomLinkedList(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt"))).Search(year,month,"inf"))
+    dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt"))).Search(year,month,"inf"))
 
     if(not dataBaseResult.returnLinkedList() == {'head': {}}):
         arrayResult = dataBaseResult.toInfArray(year, month)
