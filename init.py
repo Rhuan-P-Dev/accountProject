@@ -2,17 +2,13 @@
 from fileSystemController import FileSystemController
 from customLinkedListController import CustomLinkedListController
 from objectController import ObjectController
+from pathController import PathController
 
 FileSystem = FileSystemController()
 Object = ObjectController()
+Path = PathController()
 
 import json
-
-pathToAllObjects = "./static/allObjects/"
-
-pathToMonthObjects = "monthObjects/"
-pathToMonthsObjects = "monthsObjects/"
-pathToInfObjects = "infObjects/"
 
 accountsYear = 0
 accountsMonth = 0
@@ -56,24 +52,22 @@ def get_message(msg):
 
         file = str(msg['data']['year'])+"-"+str(msg['data']['month'])+".txt"
 
-        if(not FileSystem.checkFile(pathToAllObjects+pathToMonthObjects+file)):
-            FileSystem.createFile(pathToAllObjects+pathToMonthObjects+file)
-            FileSystem.writeFileTxt(pathToAllObjects+pathToMonthObjects+file, json.dumps(msg['data']['objects']))
+        if(not FileSystem.checkFile(Path.pathToMonthObjects+file)):
+            FileSystem.createFile(Path.pathToMonthObjects+file)
+            FileSystem.writeFileTxt(Path.pathToMonthObjects+file, json.dumps(msg['data']['objects']))
             return
-                
         
-        monthObjects = json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthObjects+file))
+        monthObjects = json.loads(FileSystem.extractFileTxt(Path.pathToMonthObjects+file))
 
         for x in msg['data']['objects']:
             Object.typesOfObject[x['flag']](monthObjects, x)
 
-
-        FileSystem.writeFileTxt(pathToAllObjects+pathToMonthObjects+file, json.dumps(monthObjects))
+        FileSystem.writeFileTxt(Path.pathToMonthObjects+file, json.dumps(monthObjects))
         
     elif(msg['cmd'] == 'saveMonthsObjects'):
         # Create/update a 'Months' CustomLinkedList data base with all objects
 
-        monthsObjects = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
+        monthsObjects = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToMonthsObjects+"dataBase.txt")))
 
         # check if the element exists if there is no creating the element, if everything is ok just modify the objects
         if(monthsObjects.thisYearExist(msg['data']['year'])):
@@ -98,12 +92,12 @@ def get_message(msg):
 
             monthsObjects.add(emptyObject)
 
-        FileSystem.writeFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt", json.dumps(monthsObjects.returnLinkedList()))
+        FileSystem.writeFileTxt(Path.pathToMonthsObjects+"dataBase.txt", json.dumps(monthsObjects.returnLinkedList()))
 
     elif(msg['cmd'] == 'saveInfObjects'):
         # Create/update a 'inf' CustomLinkedList data base and with all objects
 
-        infObjects = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
+        infObjects = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToInfObjects+"dataBase.txt")))
 
         # check if the element exists if there is no creating the element, if everything is ok just modify the objects
         if(infObjects.thisYearExist(msg['data']['year'])):
@@ -124,12 +118,12 @@ def get_message(msg):
 
             infObjects.add(emptyObject)
         
-        FileSystem.writeFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt", json.dumps(infObjects.returnLinkedList()))
+        FileSystem.writeFileTxt(Path.pathToInfObjects+"dataBase.txt", json.dumps(infObjects.returnLinkedList()))
 
     elif(msg['cmd'] == 'getAllYearData'):
 
-        if(not FileSystem.checkFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")):
-            FileSystem.createFile(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")
+        if(not FileSystem.checkFile(Path.pathToMonthsObjects+"dataBase.txt")):
+            FileSystem.createFile(Path.pathToMonthsObjects+"dataBase.txt")
             temp = CustomLinkedListController({"head": {}})
 
             emptyObject = {}
@@ -138,11 +132,11 @@ def get_message(msg):
             
             temp.add(emptyObject)
 
-            FileSystem.writeFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
+            FileSystem.writeFileTxt(Path.pathToMonthsObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
             return
 
-        if(not FileSystem.checkFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")):
-            FileSystem.createFile(pathToAllObjects+pathToInfObjects+"dataBase.txt")
+        if(not FileSystem.checkFile(Path.pathToInfObjects+"dataBase.txt")):
+            FileSystem.createFile(Path.pathToInfObjects+"dataBase.txt")
             temp = CustomLinkedListController({"head": {}})
 
             emptyObject = {}
@@ -151,7 +145,7 @@ def get_message(msg):
             
             temp.add(emptyObject)
 
-            FileSystem.writeFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
+            FileSystem.writeFileTxt(Path.pathToInfObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
             return
 
         monthArray = getAllMonthData(msg['data'])
@@ -219,7 +213,7 @@ def getAllMonthData(year):
     return monthsArray
 
 def getMonthAccounts(year, month):
-    pathToFile = pathToAllObjects+pathToMonthObjects+(f"{year}-{month}.txt")
+    pathToFile = Path.pathToMonthObjects+(f"{year}-{month}.txt")
     if(FileSystem.checkFile(pathToFile)):
         return json.loads(open(pathToFile, 'r+').readlines()[0])
     else:
@@ -232,7 +226,7 @@ def sumAllMonthData(data):
     return result / 100
 
 def getAllMonthsData(year):
-    dataBase = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt")))
+    dataBase = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToMonthsObjects+"dataBase.txt")))
 
     month = 1
     monthsArray = []
@@ -249,7 +243,7 @@ def getAllMonthsData(year):
     return monthsArray
 
 def getAllInfData(year):
-    dataBase = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt")))
+    dataBase = CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToInfObjects+"dataBase.txt")))
 
     month = 1
     infArray = []
@@ -266,7 +260,7 @@ def getAllInfData(year):
     return infArray
 
 def getMonthsAccounts(year, month):
-    dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToMonthsObjects+"dataBase.txt"))).Search(year,month,"month"))
+    dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToMonthsObjects+"dataBase.txt"))).Search(year,month,"month"))
 
     if(not dataBaseResult.returnLinkedList() == {'head': {}}):
         arrayResult = dataBaseResult.toMonthsArray(year, month)
@@ -278,7 +272,7 @@ def getMonthsAccounts(year, month):
     return arrayResult
 
 def getInfAccounts(year, month):
-    dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(pathToAllObjects+pathToInfObjects+"dataBase.txt"))).Search(year,month,"inf"))
+    dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToInfObjects+"dataBase.txt"))).Search(year,month,"inf"))
 
     if(not dataBaseResult.returnLinkedList() == {'head': {}}):
         arrayResult = dataBaseResult.toInfArray(year, month)
