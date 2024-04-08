@@ -62,7 +62,7 @@ function buildCalendar(data){
         tempTemplate = tempTemplate.replace("{month}",numberCalendar+" - "+nameCalendar)
         tempTemplate = tempTemplate.replace("{value}", data[index])
 
-        tempTemplate = tempTemplate.replace("{value}", moneyStandard+resumeMoney(data[index]))
+        tempTemplate = tempTemplate.replace("{moneyValue}", moneyStandard+resumeMoney(data[index]))
 
         monthsBox.insertAdjacentHTML("beforeend",tempTemplate)
 
