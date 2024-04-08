@@ -33,7 +33,9 @@ docReady(function(){
         if(msg.cmd == "allYearData"){
             buildCalendar(msg.data)
 
-            document.getElementById("mainSum").innerHTML = moneyStandard+resumeMoney(sumArray(msg.data))
+            document.getElementById("mainSum").innerHTML = moneyStandard+resumeMoney(
+                msg.data.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+            )
 
             Paint.paintCalendar(msg.data)
             Paint.paintYear(msg.data)

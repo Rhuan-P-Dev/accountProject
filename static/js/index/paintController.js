@@ -36,7 +36,9 @@ export class PaintController{
     }
 
     paintYear(allMonthsValueArray){
-        this.yearElement.style.color = this.checkValue(sumArray(allMonthsValueArray)).color
+        this.yearElement.style.color = this.checkValue(
+            allMonthsValueArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+        ).color
     }
 
     checkValue(value){
