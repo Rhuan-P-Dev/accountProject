@@ -4,7 +4,7 @@ import { AccountsController } from "./accountsController.js"
 const Accounts = new AccountsController()
 
 const effectConversor = {"upDown":"downUp","downUp":"upDown"}
-const effectColor = {"upDown":"lightgreen","downUp":"red"}
+const effectColor = {"upDown":"green","downUp":"red"}
 
 const convertSortTypeToNumber = {"sortName":1,"sortValue":3,"sortProduct":5,"sortMethod":7,"sortStart":9,"sortEnd":11,"sortDate":13}
 
