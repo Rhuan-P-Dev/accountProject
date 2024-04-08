@@ -8,7 +8,7 @@ const effectColor = {"upDown":"green","downUp":"red"}
 
 const convertSortTypeToNumber = {"sortName":1,"sortValue":3,"sortProduct":5,"sortMethod":7,"sortStart":9,"sortEnd":11,"sortDate":13}
 
-const convertTypeToParser = {"str":parserString, "float":parserFloat, "int":parserInt}
+const convertTypeToParser = {"str":parserString, "float":parseFloat, "int":parseInt}
 
 export class SortBoxController {
 
@@ -114,14 +114,6 @@ function mirrorArray(array){
  
 function parserString(value){
     return value.toString()
-}
-
-function parserFloat(value){
-    return parseFloat(value)
-}
-
-function parserInt(value){
-    return parseInt(value)
 }
 
 const SortBox = new SortBoxController()
