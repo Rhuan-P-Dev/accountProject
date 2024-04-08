@@ -31,13 +31,11 @@ const calendarConverter = {
     12:"December",
 }
 
-const suffixMoney = { //is right?
-    1:"Mil",
-    2:"Milhão",
-    3:"Bilhão",
-    4:"Trilhão",
-    5:"Quadrilhão",
-    6:"Quintilhão",
-    7:"Sextilhão",
-    8:"Oitavilhão",
+const suffixMoney = {
+    1:"Thousand",
+    2:"Million",
+    3:"Billion",
+    4:"Trillion",
+    5:"Quadrillion",
+    6:"Quintillion",
 }
