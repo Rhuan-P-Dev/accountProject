@@ -1,9 +1,13 @@
 
 import { DataController } from "./dataController.js"
+import { AccountsController } from "./accountsController.js"
+import { ServerRequestController } from "./serverRequestController.js"
 
 const Data = new DataController()
+const Accounts = new AccountsController()
+const ServerRequest = new ServerRequestController()
 
-const keyBordFunctions = {"ArrowLeft":ArrowLeftFunction,
+const keyBoardShiftFunctions = {"ArrowLeft":ArrowLeftFunction,
                           "ArrowRight":ArrowRightFunction,
                           " ":spaceFunction}
 
@@ -20,10 +24,9 @@ export class KeyBordController{
     }
 
     buildTriggers(){
-        return
         document.querySelector("html").addEventListener("keydown",function(e){
-            if(keyBordFunctions[e["key"]]){
-                keyBordFunctions[e["key"]]()
+            if(keyBoardShiftFunctions[e["key"]] && e["shiftKey"]){
+                keyBoardShiftFunctions[e["key"]]()
             }
         })
 
@@ -33,11 +36,15 @@ export class KeyBordController{
 
 
 function ArrowLeftFunction(){
+    Accounts.reset()
     Data.mathMonth(-1)
+    ServerRequest.getAccounts()
 }
 
 function ArrowRightFunction(){
+    Accounts.reset()
     Data.mathMonth(1)
+    ServerRequest.getAccounts()
 }
 
 function spaceFunction(){
