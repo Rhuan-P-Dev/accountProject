@@ -27,13 +27,11 @@ function resumeMoney(value, fix = 2){
     let cutMax = left.length
     let suffix = 0
 
-    while(true){
-        if(3 < cutMax){
-            cutMax -= 3
-            suffix += 1
-        }else{
-            break
-        }
+    while(
+        3 < cutMax
+    ){
+        cutMax -= 3
+        suffix += 1
     }
 
     if(left.substr(cutMax,cutMax) == ""){
