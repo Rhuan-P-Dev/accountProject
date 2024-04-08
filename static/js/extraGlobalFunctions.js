@@ -13,8 +13,16 @@ function resumeMoney(value, fix = 2){
 
     value = value.toFixed(fix)
 
+    let signal = ""
+
     let right = value.toString().split(".")[1]
     let left = value.toString().split(".")[0]
+
+    // make the negative left act like a positive left
+    if(left[0] == "-"){
+        left = left.substr(1)
+        signal = "-"
+    }
 
     let cutMax = left.length
     let suffix = 0
@@ -29,9 +37,9 @@ function resumeMoney(value, fix = 2){
     }
 
     if(left.substr(cutMax,cutMax) == ""){
-        return left.substr(0,cutMax)+"."+right
+        return signal + left.substr(0,cutMax)+"."+right
     }else{
-        return left.substr(0,cutMax)+"."+left.substr(cutMax,cutMax)+" "+suffixMoney[suffix]
+        return signal + left.substr(0,cutMax)+"."+left.substr(cutMax,cutMax)+" "+suffixMoney[suffix]
     }
 
 }
