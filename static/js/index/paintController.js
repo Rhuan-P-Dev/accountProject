@@ -1,15 +1,13 @@
 
-// which color patterns should be applied
-// B = back ground
 const COLOR = {
     "default":"gray",
-    "defaultB":"rgba(128, 128, 128, 0.2)",
+    "defaultBackground":"rgba(128, 128, 128, 0.2)",
 
     "positive":"green",
-    "positiveB":"rgba(0, 128, 0, 0.2)",
+    "positiveBackground":"rgba(0, 128, 0, 0.2)",
 
     "negative":"red",
-    "negativeB":"rgba(255, 0, 0, 0.2)",
+    "negativeBackground":"rgba(255, 0, 0, 0.2)",
 }
 
 export class PaintController{
@@ -31,10 +29,10 @@ export class PaintController{
             let result = this.checkValue(value)
     
             months[index].style.border = "2px solid "+result.color
-            months[index].style.backgroundColor = result.backGroundColor
+            months[index].style.backgroundColor = result.backgroundColor
             
         }
-            
+
     }
 
     paintYear(allMonthsValueArray){
@@ -43,12 +41,12 @@ export class PaintController{
 
     checkValue(value){
 
-        let color = {"color":COLOR.default,"backGroundColor":COLOR.defaultB}
+        let color = {"color":COLOR.default,"backgroundColor":COLOR.defaultBackground}
     
         if(value < 0){
-            return {"color":COLOR.negative,"backGroundColor":COLOR.negativeB}
+            return {"color":COLOR.negative,"backgroundColor":COLOR.negativeBackground}
         }else if(value > 0){
-            return{"color":COLOR.positive,"backGroundColor":COLOR.positiveB}
+            return{"color":COLOR.positive,"backgroundColor":COLOR.positiveBackground}
         }
     
         return color
