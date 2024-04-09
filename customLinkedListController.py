@@ -19,24 +19,21 @@ class CustomLinkedListController:
             self.list["head"]["value"] = value
             self.list["head"]["next"] = "null"
         else:
-            n = self.list["head"]
+            node = self.list["head"]
             while True:
-                if(n["value"]["year"] > value["year"]):
-                    oldValue = n["value"]
-                    oldNext = n["next"]
-                    n["value"] = value
-                    n["next"] = {"value":oldValue,"next":oldNext}
+                if(node["value"]["year"] > value["year"]):
+                    oldValue = node["value"]
+                    oldNext = node["next"]
+                    node["value"] = value
+                    node["next"] = {"value":oldValue,"next":oldNext}
                     return
                 else:
-                    while True:
-                        if(n["next"] == "null"):
-                            n["next"] = {}
-                            n["next"]["value"] = value
-                            n["next"]["next"] = "null"
-                            return
-                        else:
-                            n = n["next"]
-                            break
+                    if(node["next"] == "null"):
+                        node["next"] = {}
+                        node["next"]["value"] = value
+                        node["next"]["next"] = "null"
+                        return
+                    node = node["next"]
     
     # search on the self.list and create a list from the results
     def Search(self, year, month, type):
