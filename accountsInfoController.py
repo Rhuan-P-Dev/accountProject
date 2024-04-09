@@ -43,7 +43,7 @@ class AccountsInfoController:
     def getMonthAccounts(self, year, month):
         pathToFile = Path.pathToMonthObjects+(f"{year}-{month}.txt")
         if(FileSystem.checkFile(pathToFile)):
-            return json.loads(open(pathToFile, 'r+').readlines()[0])
+            return json.loads(FileSystem.extractFileTxt(pathToFile))
         else:
             return False
 
