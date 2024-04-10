@@ -9,6 +9,10 @@ class CustomLinkedListController:
 
     def __init__(self, list = {"head": {}}):
         self.list = list
+        self.typesOfSearch = {
+            "month": self.searchMonths,
+            "inf": self.searchInf
+        }
 
     def returnLinkedList(self):
         return self.list
@@ -79,25 +83,23 @@ class CustomLinkedListController:
                     node = node["next"]
     
     # search on the self.list and create a list from the results
-    def Search(self, year, month, type):
-        typesOfSearch = {"month":self.searchMonths,"inf":self.searchInf}
+    def search(self, year, month, type):
 
         tempCustomLinkedList = CustomLinkedListController({"head": {}})
-        temp = ""
 
-        n = self.list["head"]
+        node = self.list["head"]
 
         while True:
 
-            temp = typesOfSearch[type](n["value"], year, month)
+            searchResult = self.typesOfSearch[type](node["value"], year, month)
 
-            if(not temp == "null"):
-                tempCustomLinkedList.add(temp)
+            if(not searchResult == "null"):
+                tempCustomLinkedList.add(searchResult)
 
-            if(n["next"] == "null"):
+            if(node["next"] == "null"):
                 return tempCustomLinkedList.returnLinkedList()
             else:
-                n = n["next"]
+                node = node["next"]
 
     # adds nodes that the range 'start' and 'end', are high or equal from the search range
     def searchMonths(self, n, year, month):

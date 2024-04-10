@@ -60,7 +60,7 @@ class AccountsInfoController:
         monthsArray = []
 
         while month < 13:
-            dataBaseResult = dataBase.Search(year,month,"month")
+            dataBaseResult = dataBase.search(year,month,"month")
             if(not dataBaseResult == {'head': {}}):
                 sumResult = CustomLinkedListController(dataBaseResult).sumAllYearsMonths()
             else:
@@ -77,7 +77,7 @@ class AccountsInfoController:
         infArray = []
 
         while month < 13:
-            dataBaseResult = dataBase.Search(year,month,"inf")
+            dataBaseResult = dataBase.search(year,month,"inf")
             if(not dataBaseResult == {'head': {}}):
                 sumResult = CustomLinkedListController(dataBaseResult).sumAllYearsInf()
             else:
@@ -88,7 +88,7 @@ class AccountsInfoController:
         return infArray
 
     def getMonthsAccounsts(self, year, month):
-        dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToMonthsObjects+"dataBase.txt"))).Search(year,month,"month"))
+        dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToMonthsObjects+"dataBase.txt"))).search(year,month,"month"))
 
         if(not dataBaseResult.returnLinkedList() == {'head': {}}):
             arrayResult = dataBaseResult.toMonthsArray(year, month)
@@ -100,7 +100,7 @@ class AccountsInfoController:
         return arrayResult
 
     def getInfAccounts(self, year, month):
-        dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToInfObjects+"dataBase.txt"))).Search(year,month,"inf"))
+        dataBaseResult = CustomLinkedListController(CustomLinkedListController(json.loads(FileSystem.extractFileTxt(Path.pathToInfObjects+"dataBase.txt"))).search(year,month,"inf"))
 
         if(not dataBaseResult.returnLinkedList() == {'head': {}}):
             arrayResult = dataBaseResult.toInfArray(year, month)
