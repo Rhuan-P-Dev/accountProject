@@ -124,32 +124,6 @@ def get_message(msg):
 
     elif(msg['cmd'] == 'getAllYearData'):
 
-        if(not FileSystem.checkFile(Path.pathToMonthsObjects+"dataBase.txt")):
-            FileSystem.createFile(Path.pathToMonthsObjects+"dataBase.txt")
-            temp = CustomLinkedListController({"head": {}})
-
-            emptyObject = {}
-            emptyObject['year'] = msg['data']
-            emptyObject['months'] = []
-            
-            temp.add(emptyObject)
-
-            FileSystem.writeFileTxt(Path.pathToMonthsObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
-            return
-
-        if(not FileSystem.checkFile(Path.pathToInfObjects+"dataBase.txt")):
-            FileSystem.createFile(Path.pathToInfObjects+"dataBase.txt")
-            temp = CustomLinkedListController({"head": {}})
-
-            emptyObject = {}
-            emptyObject['year'] = msg['data']
-            emptyObject['months'] = []
-            
-            temp.add(emptyObject)
-
-            FileSystem.writeFileTxt(Path.pathToInfObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
-            return
-
         monthArray = AccountsInfo.getAllMonthData(msg['data'])
         monthsArray = AccountsInfo.getAllMonthsData(msg['data'])
         infArray = AccountsInfo.getAllInfData(msg['data'])
@@ -184,7 +158,38 @@ def get_message(msg):
 
         emit('from_server', {'cmd': 'loadAccounts', 'accounts': finalArray})
 
+def initDataBases():
+
+    if(not FileSystem.checkFile(Path.pathToMonthsObjects+"dataBase.txt")):
+        FileSystem.createFile(Path.pathToMonthsObjects+"dataBase.txt")
+        temp = CustomLinkedListController({"head": {}})
+
+        emptyObject = {}
+        emptyObject['year'] = 0
+        emptyObject['months'] = []
+            
+        temp.add(emptyObject)
+
+        FileSystem.writeFileTxt(Path.pathToMonthsObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
+        return
+
+    if(not FileSystem.checkFile(Path.pathToInfObjects+"dataBase.txt")):
+        FileSystem.createFile(Path.pathToInfObjects+"dataBase.txt")
+        temp = CustomLinkedListController({"head": {}})
+
+        emptyObject = {}
+        emptyObject['year'] = 0
+        emptyObject['months'] = []
+            
+        temp.add(emptyObject)
+
+        FileSystem.writeFileTxt(Path.pathToInfObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
+        return
+
 if __name__ == "__main__":
+
+    initDataBases()
+
     print("Server started!")
     print("You may now connect with a browser at http://127.0.0.1:5035/")
     socketio.run(app, host='127.0.0.1', port=5035)
