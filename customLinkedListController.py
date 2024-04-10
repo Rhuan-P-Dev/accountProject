@@ -12,9 +12,52 @@ class CustomLinkedListController:
 
     def returnLinkedList(self):
         return self.list
-    
+
+    def checkValidMonth(self, object):
+
+        if("month" in object):
+            if("SE" in object):
+                for account in object["SE"]:
+                    if(
+                        not isinstance(account["start"], int)
+                        or
+                        not isinstance(account["end"], int)
+                        or
+                        not account["start"] <= account["end"]
+                    ):
+                        return False
+            
+        else:
+            return False
+
+        return True
+
+    def checkValidMonths(self, object):
+
+        for month in object["months"]:
+            if(not self.checkValidMonth(month)):
+                return False
+
+        return True
+
+    def checkValidAddInput(self, object):
+
+        if(
+            "year" in object
+            and
+            self.checkValidMonths(object)
+        ):
+
+            return True
+        else:
+            return False
+
     # this list is self-adjusted to keep in a growing order
     def add(self, value):
+
+        if(not self.checkValidAddInput(value)):
+            return False
+
         if(self.list["head"] == {}):
             self.list["head"]["value"] = value
             self.list["head"]["next"] = "null"
@@ -26,13 +69,13 @@ class CustomLinkedListController:
                     oldNext = node["next"]
                     node["value"] = value
                     node["next"] = {"value":oldValue,"next":oldNext}
-                    return
+                    return True
                 else:
                     if(node["next"] == "null"):
                         node["next"] = {}
                         node["next"]["value"] = value
                         node["next"]["next"] = "null"
-                        return
+                        return True
                     node = node["next"]
     
     # search on the self.list and create a list from the results
