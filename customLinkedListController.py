@@ -102,21 +102,21 @@ class CustomLinkedListController:
                 node = node["next"]
 
     # adds nodes that the range 'start' and 'end', are high or equal from the search range
-    def searchMonths(self, n, year, month):
-        n2 = copy.deepcopy(n)
-        if(n["year"] <= year):
+    def searchMonths(self, node, year, month):
+        node2 = copy.deepcopy(node)
+        if(node["year"] <= year):
             indexMonth = 0
-            for x in n["months"]:
+            for x in node["months"]:
                 indexSE = 0
                 for y in x["SE"]:
                     path = ( y["end"] - y["start"] ) + x["month"]
-                    cut = ( ( year - n["year"] ) * 12 ) + month
-                    if( path < cut or n["year"] == year and x["month"] > month):
-                        del n2["months"][indexMonth]["SE"][indexSE]
+                    cut = ( ( year - node["year"] ) * 12 ) + month
+                    if( path < cut or node["year"] == year and x["month"] > month):
+                        del node2["months"][indexMonth]["SE"][indexSE]
                         indexSE-=1
                     indexSE+=1
                 indexMonth+=1
-            return n2
+            return node2
         return "null"
 
     # adds nodes that are smaller than the search value
