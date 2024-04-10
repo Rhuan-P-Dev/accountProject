@@ -120,19 +120,26 @@ class CustomLinkedListController:
         return "null"
 
     # adds nodes that are smaller than the search value
-    def searchInf(self, n, year, month):
-        n = copy.deepcopy(n)
-        if(n["year"] < year):
-            return n
-        if(n["year"] == year):
+    def searchInf(self, node, year, month):
+
+        node2 = {}
+
+        node2["year"] = node["year"]
+        node2["months"] = []
+    
+        if(node2["year"] < year):
+            node2["months"] = copy.deepcopy(node["months"])
+            return node2
+
+        if(node2["year"] == year):
             index = 0
-            for x in n["months"]:
-                if(x["month"] > month):
-                    del n["months"][index]
+            for x in node["months"]:
+                if(x["month"] <= month):
+                    node2["months"].append(
+                        node["months"][index]
+                    )
                 index+=1
-            if(len(n["months"]) == 0):
-                return "null"
-            return n
+            return node2
 
         return "null"
 
