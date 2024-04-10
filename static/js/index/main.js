@@ -90,7 +90,10 @@ function buildMonthsTriggers(){
 
             socket.send({'cmd': 'setAccountsData', 'year':Year.getYear(), 'month':parseInt(this.getAttribute("id"))})
 
-            location.href = "accounts"
+            setTimeout(() => {
+                location.href = "accounts"
+            },25)
+
         })
         
     }
