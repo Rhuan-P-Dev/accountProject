@@ -262,22 +262,28 @@ class CustomLinkedListController:
         return result / 100
 
     def toMonthsArray(self, year, month):
-        n = self.list["head"]
+        node = self.list["head"]
         array = []
-        while True:
-            for months in n["value"]["months"]:
+        while not node["next"] == "null":
+            for months in node["value"]["months"]:
                 for SE in months["SE"]:
                     for objects in SE["objects"]:
-                        tempObj = self.calcTheEvolution(year, month, n["value"]["year"], months["month"], SE["start"], SE["end"])
+                        tempObj = self.calcTheEvolution(
+                            year,
+                            month,
+                            node["value"]["year"],
+                            months["month"],
+                            SE["start"],
+                            SE["end"]
+                        )
                         objects["start"] = tempObj["start"]
                         objects["end"] = tempObj["end"]
                         objects["month"] = tempObj["month"]
-                        objects["year"] = n["value"]["year"]
+                        objects["year"] = node["value"]["year"]
                         objects["type"] = "months"
                         array.append(objects)
-            if(n["next"] == "null"):
-                return array
-            n = n["next"]
+            node = node["next"]
+        return array
 
     def toInfArray(self, year, month):
         n = self.list["head"]
