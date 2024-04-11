@@ -12,12 +12,11 @@ class ObjectController:
         array.append(object)
 
     def update(self, array, object):
-        index = 0
-        for x in array:
-            if(x["ID"] == object["ID"]):
+        for index, x in enumerate(array):
+            if x["ID"] == object["ID"]:
                 array[index] = object
-                return
-            index+=1
+                return True
+        return False
 
     def remove(self, array, object):
         index = 0
