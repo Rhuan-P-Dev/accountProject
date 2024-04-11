@@ -29,9 +29,8 @@ class ObjectController:
         return False
 
     def remove(self, array, object):
-        index = 0
-        for x in array:
-            if(x["ID"] == object["ID"]):
+        for index, x in enumerate(array):
+            if x["ID"] == object["ID"]:
                 del array[index]
-                return
-            index+=1
+                return True
+        return False
