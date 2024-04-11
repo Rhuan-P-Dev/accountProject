@@ -8,8 +8,18 @@ class ObjectController:
             "remove": self.remove
         }
 
+    def checkValidAddInput(self, object):
+        if(
+            "ID" in object
+            and
+            object["ID"].startswith("ID")
+        ):
+            return True
+        return False
+
     def add(self, array, object):
-        array.append(object)
+        if self.checkValidAddInput(object):
+            array.append(object)
 
     def update(self, array, object):
         for index, x in enumerate(array):
