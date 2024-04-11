@@ -79,7 +79,15 @@ def get_message(msg):
                 if(monthsObjects.thisSEExist(msg['data']['year'],msg['data']['month'],msg['data']['start'],msg['data']['end'])):
                     
                     for x in msg['data']['objects']:
-                        monthsObjects.Object(msg['data']['year'],msg['data']['month'],msg['data']['start'],msg['data']['end'],x,x['flag'])
+                        monthsObjects.object(
+                            "month",
+                            msg['data']['year'],
+                            msg['data']['month'],
+                            x,
+                            x['flag'],
+                            msg['data']['start'],
+                            msg['data']['end'],
+                        )
                 else:
                     monthsObjects.addSE(msg['data']['year'],msg['data']['month'],{"start":msg['data']['start'],"end":msg['data']['end'],"objects":msg['data']['objects']})
 
@@ -107,7 +115,13 @@ def get_message(msg):
             if(infObjects.thisMonthExist(msg['data']['year'],msg['data']['month'])):
 
                 for x in msg['data']['objects']:
-                    infObjects.ObjectInf(msg['data']['year'],msg['data']['month'],x,x['flag'])
+                    infObjects.object(
+                        "inf",
+                        msg['data']['year'],
+                        msg['data']['month'],
+                        x,
+                        x['flag']
+                    )
 
             else:
                 infObjects.addMonth(msg['data']['year'],AccountsInfo.createInfObject(msg['data']['month'],msg['data']['objects']))

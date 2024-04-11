@@ -144,37 +144,25 @@ class CustomLinkedListController:
         return "null"
 
     # add, remove, update a Object
-    def Object(self, year, month, start, end, object, type):
+    def object(self, type, year, month, object, typeOperation, start, end):
 
-        n = self.list["head"]
+        node = self.list["head"]
 
-        while True:
-            if(n["value"]["year"] == year):
-                for x in n["value"]["months"]:
+        while not node["next"] == "null":
+            if(node["value"]["year"] == year):
+                for x in node["value"]["months"]:
                     if(x["month"] == month):
+
+                        if(type == "inf"):
+                            return Object.typesOfObject[typeOperation](x["objects"], object)
+
                         for y in x["SE"]:
                             if(y["start"] == start and y["end"] == end):
-                                return Object.typesOfObject[type](y["objects"], object)
-
-            if(n["next"] == "null"):
-                return False
+                                return Object.typesOfObject[typeOperation](y["objects"], object)
             else:
-                n = n["next"]
+                node = node["next"]
 
-    def ObjectInf(self, year, month, object, type):
-
-        n = self.list["head"]
-
-        while True:
-            if(n["value"]["year"] == year):
-                for x in n["value"]["months"]:
-                    if(x["month"] == month):
-                        return Object.typesOfObject[type](x["objects"], object)
-
-            if(n["next"] == "null"):
-                return False
-            else:
-                n = n["next"]
+        return False
 
     def thisYearExist(self, year):
         n = self.list["head"]
