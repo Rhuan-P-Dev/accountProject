@@ -165,13 +165,12 @@ class CustomLinkedListController:
         return False
 
     def thisYearExist(self, year):
-        n = self.list["head"]
-        while True:
-            if(n["value"]["year"] == year):
+        node = self.list["head"]
+        while not node["next"] == "null":
+            if(node["value"]["year"] == year):
                 return True
-            if(n["next"] == "null"):
-                return False
-            n = n["next"]
+            node = node["next"]
+        return False
 
     def thisMonthExist(self, year, month):
         n = self.list["head"]
