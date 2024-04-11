@@ -206,17 +206,38 @@ class CustomLinkedListController:
             node = node["next"]
         return False
 
+    def checkValidAddSEInput(self, SE):
+
+        if(
+            "start" in SE
+            and
+            "end" in SE
+            and
+            "objects" in SE
+            and
+            SE["start"] < SE["end"]
+            and
+            SE["start"] >= 0
+        ):
+            return True
+
+        return False
+
     def addSE(self, year, month, SE):
-        n = self.list["head"]
-        while True:
-            if(n["value"]["year"] == year):
-                for x in n["value"]["months"]:
+
+        if(not self.checkValidAddSEInput(SE)):
+            return False
+
+        node = self.list["head"]
+        while not node["next"] == "null":
+            if(node["value"]["year"] == year):
+                for x in node["value"]["months"]:
                     if(x["month"] == month): 
                         x["SE"].append(SE)
                         return True
-            if(n["next"] == "null"):
-                return False
-            n = n["next"]
+                    return False
+            node = node["next"]
+        return False
 
     def sumAllYearsMonths(self):
         n = self.list["head"]
