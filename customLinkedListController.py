@@ -240,16 +240,15 @@ class CustomLinkedListController:
         return False
 
     def sumAllYearsMonths(self):
-        n = self.list["head"]
+        node = self.list["head"]
         result = 0
-        while True:
-            for months in n["value"]["months"]:
+        while not node["next"] == "null":
+            for months in node["value"]["months"]:
                 for SE in months["SE"]:
                     for objects in SE["objects"]:
-                        result+= int((objects["value"] * 100))
-            if(n["next"] == "null"):
-                return result / 100
-            n = n["next"]
+                        result += int((objects["value"] * 100))
+            node = node["next"]
+        return result / 100
     
     def sumAllYearsInf(self):
         n = self.list["head"]
