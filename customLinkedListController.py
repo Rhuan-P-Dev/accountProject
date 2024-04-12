@@ -148,7 +148,7 @@ class CustomLinkedListController:
 
         node = self.list["head"]
 
-        while not node["next"] == "null":
+        while not node == "null":
             if(node["value"]["year"] == year):
                 for x in node["value"]["months"]:
                     if(x["month"] == month):
@@ -166,7 +166,7 @@ class CustomLinkedListController:
 
     def thisYearExist(self, year):
         node = self.list["head"]
-        while not node["next"] == "null":
+        while not node == "null":
             if(node["value"]["year"] == year):
                 return True
             node = node["next"]
@@ -174,7 +174,7 @@ class CustomLinkedListController:
 
     def thisMonthExist(self, year, month):
         node = self.list["head"]
-        while not node["next"] == "null":
+        while not node == "null":
             if(node["value"]["year"] == year):
                 for x in node["value"]["months"]:
                     if(x["month"] == month):
@@ -195,7 +195,7 @@ class CustomLinkedListController:
 
     def thisSEExist(self, year, month, start, end):
         node = self.list["head"]
-        while not node["next"] == "null":
+        while not node == "null":
             if(node["value"]["year"] == year):
                 for x in node["value"]["months"]:
                     if(x["month"] == month): 
@@ -229,7 +229,7 @@ class CustomLinkedListController:
             return False
 
         node = self.list["head"]
-        while not node["next"] == "null":
+        while not node == "null":
             if(node["value"]["year"] == year):
                 for x in node["value"]["months"]:
                     if(x["month"] == month): 
@@ -242,7 +242,7 @@ class CustomLinkedListController:
     def sumAllYearsMonths(self):
         node = self.list["head"]
         result = 0
-        while not node["next"] == "null":
+        while not node == "null":
             for months in node["value"]["months"]:
                 for SE in months["SE"]:
                     for objects in SE["objects"]:
@@ -253,7 +253,7 @@ class CustomLinkedListController:
     def sumAllYearsInf(self):
         node = self.list["head"]
         result = 0
-        while not node["next"] == "null":
+        while not node == "null":
             for months in node["value"]["months"]:
                 for objects in months["objects"]:
                     result += int((objects["value"] * 100))
@@ -264,7 +264,7 @@ class CustomLinkedListController:
     def toMonthsArray(self, year, month):
         node = self.list["head"]
         array = []
-        while not node["next"] == "null":
+        while not node == "null":
             for months in node["value"]["months"]:
                 for SE in months["SE"]:
                     for objects in SE["objects"]:
@@ -288,7 +288,7 @@ class CustomLinkedListController:
     def toInfArray(self, year, month):
         node = self.list["head"]
         array = []
-        while not node["next"] == "null":
+        while not node == "null":
             for months in node["value"]["months"]:
                 for objects in months["objects"]:
                     objects["month"] = months["month"]
