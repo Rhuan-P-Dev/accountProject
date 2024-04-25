@@ -4,11 +4,13 @@ from customLinkedListController import CustomLinkedListController
 from objectController import ObjectController
 from pathController import PathController
 from accountsInfoController import AccountsInfoController
+from backupController import BackupController
 
 FileSystem = FileSystemController()
 Object = ObjectController()
 Path = PathController()
 AccountsInfo = AccountsInfoController()
+Backup = BackupController()
 
 import json
 
@@ -203,6 +205,8 @@ def initDataBases():
 if __name__ == "__main__":
 
     initDataBases()
+    Backup.backup()
+    Backup.start_backup_scheduler()
 
     print("Server started!")
     print("You may now connect with a browser at http://127.0.0.1:5035/")
