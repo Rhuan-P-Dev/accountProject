@@ -165,7 +165,7 @@ html,body{
 .main > .down > .down > *{
     display: inline;
     margin: auto;
-    padding: 2px 8px;
+    padding: 0px 8px;
 }
 
 
