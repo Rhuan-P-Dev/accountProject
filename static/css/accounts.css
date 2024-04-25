@@ -6,7 +6,7 @@
 */
 
 :root{
- --defaultPadding: calc(1% + 3px);
+ --defaultPadding: calc(1% + 1px);
 }
 
 /* CUSTOM CLASS */
