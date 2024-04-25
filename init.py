@@ -187,7 +187,6 @@ def initDataBases():
         temp.add(emptyObject)
 
         FileSystem.writeFileTxt(Path.pathToMonthsObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
-        return
 
     if(not FileSystem.checkFile(Path.pathToInfObjects+"dataBase.txt")):
         FileSystem.createFile(Path.pathToInfObjects+"dataBase.txt")
@@ -200,7 +199,6 @@ def initDataBases():
         temp.add(emptyObject)
 
         FileSystem.writeFileTxt(Path.pathToInfObjects+"dataBase.txt", json.dumps(temp.returnLinkedList()))
-        return
 
 if __name__ == "__main__":
 
