@@ -81,7 +81,7 @@ html,body{
 
 .main > .up{
     text-align: center;
-    font-size: 1.4vw;
+    font-size: 0.8vw;
     padding: var(--defaultPadding);
     border-bottom: 2px solid white;
 }
