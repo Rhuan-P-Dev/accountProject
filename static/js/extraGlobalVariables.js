@@ -1,5 +1,5 @@
 
-const moneyStandard = "RS "
+const moneyStandard = "Currency "
 
 const flatNumberToFatNamber = {
     1:"01",
