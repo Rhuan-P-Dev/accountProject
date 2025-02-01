@@ -122,7 +122,9 @@ def get_message(msg):
                         msg['data']['year'],
                         msg['data']['month'],
                         x,
-                        x['flag']
+                        x['flag'],
+                        x['start'],
+                        x['end'],
                     )
 
             else:
